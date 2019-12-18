@@ -46,7 +46,32 @@ function funcs.new(sz)
 
   -- add two bit tables
   function tmp:add(b)
+    local tmp = funcs.new(#bits)
 
+    -- full carry adder implementation, returns the sum and carry bit
+    local function add(a, b, c)
+      local xor1 = bit32.bxor(a, b)
+      local sum = bit32.bxor(xor1, c)
+      local a1 = bit32.band(xor1, c)
+      local a2 = bit32.band(a, b)
+      local carryout = bit32.bor(a1, a2)
+      return sum, carryout
+    end
+
+    -- ripple-carry adder
+    local s = 0
+    local carry = 0
+    for i = #bits, 1, -1 do
+      s, carry = add(bits[i], b[i], carry)
+      tmp:set(i, s)
+    end
+
+    -- if the carry bit is set at the end of addition, we've overflowed.
+    if carry then
+      tmp.overflowbit = true
+    end
+
+    return tmp
   end
 
   -- negate then add
@@ -73,6 +98,9 @@ function funcs.new(sz)
 
   end
 
+
+  -- ############ etc functions ############ --
+
   --[[
     if a is positive, b is nil:
       cut starting from position a until end
@@ -83,9 +111,6 @@ function funcs.new(sz)
     else:
       error
   ]]
-
-  -- ############ etc functions ############ --
-
   function tmp:cut(a, b)
 
   end
@@ -164,9 +189,11 @@ function funcs.new(sz)
     return str
   end
 
+  -- ####### Setup ####### --
+
   if type(sz) == "number" then
     for i = 1, sz do
-      bits[i] = 0
+      bits[i] = false
     end
   else
     for i = 1, #sz do
