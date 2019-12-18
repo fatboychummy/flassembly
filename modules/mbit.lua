@@ -42,19 +42,7 @@ function funcs.new(sz)
     return bits[key]
   end
 
-  function tmp:size()
-    return #bits
-  end
-
-  -- left-shift by c positions
-  function tmp:lshift(c)
-
-  end
-
-  -- right-shift by c positions
-  function tmp:rshift(c)
-
-  end
+  -- ############ Arithmetic functions ############ --
 
   -- add two bit tables
   function tmp:add(b)
@@ -76,11 +64,6 @@ function funcs.new(sz)
     return tmp
   end
 
-  -- set a bit in the bit table
-  function tmp:set(i, x)
-    bits[i] = x
-  end
-
   function tmp:mult(b)
 
   end
@@ -100,8 +83,85 @@ function funcs.new(sz)
     else:
       error
   ]]
+
+  -- ############ etc functions ############ --
+
   function tmp:cut(a, b)
 
+  end
+
+  -- set a bit in the bit table
+  function tmp:set(i, x)
+    bits[i] = x
+  end
+
+  function tmp:size()
+    return #bits
+  end
+
+  -- ############ Logical Functions ############ --
+
+  -- left-shift by c positions
+  function tmp:lshift(c)
+
+  end
+
+  -- right-shift by c positions
+  function tmp:rshift(c)
+
+  end
+
+  function tmp:or(b)
+
+  end
+
+  function tmp:and(b)
+
+  end
+
+  function tmp:xor(b)
+
+  end
+
+  function tmp:nor(b)
+
+  end
+
+  function tmp:nand(b)
+
+  end
+
+  function tmp:nxor(b)
+
+  end
+
+  -- ############ Conversion Functions ############ --
+
+  function tmp:int()
+    local sum = 0
+    local j = 1
+    for i = #bits, 1, -1 do
+      sum = sum + bits[i] * j
+      j = j * 2
+    end
+    return sum
+  end
+
+  function tmp:float()
+    -- TODO
+  end
+
+  function tmp:char()
+    return string.char(self:int())
+  end
+
+  -- returns a string of bits
+  function tmp:bstr()
+    local str = ""
+    for i = 1, #bits do
+      str = str .. tostring(bits[i])
+    end
+    return str
   end
 
   if type(sz) == "number" then
