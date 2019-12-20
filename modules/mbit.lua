@@ -46,7 +46,7 @@ function funcs.new(sz)
 
   -- add two bit tables
   function tmp:add(b)
-    local tmp = funcs.new(#bits)
+    local tm = funcs.new(#bits)
 
     -- full carry adder implementation, returns the sum and carry bit
     local function add(a, b, c)
@@ -63,15 +63,15 @@ function funcs.new(sz)
     local carry = 0
     for i = #bits, 1, -1 do
       s, carry = add(bits[i], b[i], carry)
-      tmp:set(i, s)
+      tm:set(i, s)
     end
 
     -- if the carry bit is set at the end of addition, we've overflowed.
     if carry then
-      tmp.overflowbit = true
+      tm.overflowbit = true
     end
 
-    return tmp
+    return tm
   end
 
   -- negate then add
@@ -82,11 +82,11 @@ function funcs.new(sz)
 
   -- flip every bit in the bit table
   function tmp:negate()
-    local tmp = funcs.new(self)
+    local tm = funcs.new(self)
     for i = 1, #bits do
-      tmp:set(i, not bits[i])
+      tm:set(i, not bits[i])
     end
-    return tmp
+    return tm
   end
 
   function tmp:mult(b)
