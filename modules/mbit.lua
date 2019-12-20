@@ -128,12 +128,45 @@ function funcs.new(sz)
 
   -- left-shift by c positions
   function tmp:lshift(c)
+    c = c or 1
+    local tm = funcs.new(#bits)
 
+    -- copy bits left c positions
+    for i = c, #bits do
+      tm:set(i - c + 1, bits[i])
+    end
+
+    return tm
   end
 
   -- right-shift by c positions
-  function tmp:rshift(c)
+  function tmp:logrshift(c)
+    c = c or 1
+    local tm = funcs.new(#bits)
 
+    -- copy bits right c positions
+    for i = 1, #bits - c do
+      tm:set(i + c, bits[i])
+    end
+
+    return tm
+  end
+
+  function tmp:arithrshift(c)
+    c = c or 1
+    local tm = funcs.new(#bits)
+
+    -- conserve sign bit
+    for i = 1, c do
+      tm:set(i, bits[1])
+    end
+
+    -- copy bits right c positions
+    for i = 1, #bits - c do
+      tm:set(i + c, bits[i])
+    end
+
+    return tm
   end
 
   function tmp:or(b)
