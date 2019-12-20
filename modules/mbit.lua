@@ -59,9 +59,9 @@ function funcs.new(sz)
     local function add(a, b, c)
       local xor1 = bit.xor(a, b)
       local sum = bit.xor(xor1, c)
-      local a1 = bit.and(xor1, c)
-      local a2 = bit.and(a, b)
-      local carryout = bit.or(a1, a2)
+      local a1 = bit.band(xor1, c)
+      local a2 = bit.band(a, b)
+      local carryout = bit.bor(a1, a2)
       return sum, carryout
     end
 
@@ -185,7 +185,7 @@ function funcs.new(sz)
     local tm = funcs.new(#bits)
 
     for i = 1, #bits do
-      tm:set(bit.or(bits[i], b[i]))
+      tm:set(bit.bor(bits[i], b[i]))
     end
 
     return tm
@@ -195,7 +195,7 @@ function funcs.new(sz)
     local tm = funcs.new(#bits)
 
     for i = 1, #bits do
-      tm:set(bit.and(bits[i], b[i]))
+      tm:set(bit.band(bits[i], b[i]))
     end
 
     return tm
