@@ -40,10 +40,7 @@ function funcs.new(sz)
   }
 
   -- the returned object
-  local tmp = setmetatable(
-    {
-      overflowbit = false,
-    }, mta)
+  local tmp = {}
 
   function mta:__index(key)
     return bits[key]
@@ -330,6 +327,8 @@ function funcs.new(sz)
       bits[i] = sz[i]
     end
   end
+
+  tmp = setmetatable(tmp, mta)
 
   return tmp
 end
