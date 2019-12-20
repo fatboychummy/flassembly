@@ -181,7 +181,7 @@ function funcs.new(sz)
     return tm
   end
 
-  function tmp:or(b)
+  function tmp:bor(b)
     local tm = funcs.new(#bits)
 
     for i = 1, #bits do
@@ -191,7 +191,7 @@ function funcs.new(sz)
     return tm
   end
 
-  function tmp:and(b)
+  function tmp:band(b)
     local tm = funcs.new(#bits)
 
     for i = 1, #bits do
