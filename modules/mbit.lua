@@ -177,27 +177,63 @@ function funcs.new(sz)
   end
 
   function tmp:or(b)
+    local tm = funcs.new(#bits)
 
+    for i = 1, #bits do
+      tm:set(bit.or(bits[i], b[i]))
+    end
+
+    return tm
   end
 
   function tmp:and(b)
+    local tm = funcs.new(#bits)
 
+    for i = 1, #bits do
+      tm:set(bit.and(bits[i], b[i]))
+    end
+
+    return tm
   end
 
   function tmp:xor(b)
+    local tm = funcs.new(#bits)
 
+    for i = 1, #bits do
+      tm:set(bit.xor(bits[i], b[i]))
+    end
+
+    return tm
   end
 
   function tmp:nor(b)
+    local tm = funcs.new(#bits)
 
+    for i = 1, #bits do
+      tm:set(bit.nor(bits[i], b[i]))
+    end
+
+    return tm
   end
 
   function tmp:nand(b)
+    local tm = funcs.new(#bits)
 
+    for i = 1, #bits do
+      tm:set(bit.nand(bits[i], b[i]))
+    end
+
+    return tm
   end
 
   function tmp:nxor(b)
+    local tm = funcs.new(#bits)
 
+    for i = 1, #bits do
+      tm:set(bit.nxor(bits[i], b[i]))
+    end
+
+    return tm
   end
 
   -- ############ Conversion Functions ############ --
