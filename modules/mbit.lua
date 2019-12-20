@@ -92,7 +92,7 @@ function funcs.new(sz)
     local tm = funcs.new(#bits)
 
     -- invert every bit
-    tm = tm:not()
+    tm = tm:bnot()
 
     -- add one
     local add1 = funcs.new(#bits):set(#bits, true)
@@ -242,7 +242,7 @@ function funcs.new(sz)
   end
 
   -- negate every bit
-  function tmp:not()
+  function tmp:bnot()
     local tm = funcs.new(#bits)
 
     for i = 1, #bits do
