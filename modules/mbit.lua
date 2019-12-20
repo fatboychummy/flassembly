@@ -32,19 +32,8 @@ function funcs.new(sz)
   -- bit table
   local bits = {}
 
-  -- metatable
-  local mta = {
-    __type = "bit",
-    __metatable = dis,
-    __newindex = secureDisable
-  }
-
   -- the returned object
   local tmp = {}
-
-  function mta:__index(key)
-    return bits[key]
-  end
 
   -- ############ Arithmetic functions ############ --
 
@@ -326,6 +315,19 @@ function funcs.new(sz)
     for i = 1, #sz do
       bits[i] = sz[i]
     end
+  end
+
+  -- metatable
+  local mta = {
+    __type = "bit",
+    __metatable = dis,
+    __newindex = secureDisable,
+    __add = tmp.add,
+    __sub = tmp.sub
+  }
+
+  function mta:__index(key)
+    return bits[key]
   end
 
   tmp = setmetatable(tmp, mta)
