@@ -254,22 +254,60 @@ function funcs.new(sz)
 
   -- ############ Conversion Functions ############ --
 
-  function tmp:int()
+  -- conversion to unsigned integer
+  function tmp:uint()
     local sum = 0
     local j = 1
+
+    -- iterate through numbers and add to sum
     for i = #bits, 1, -1 do
-      sum = sum + bits[i] * j
+      if bits[i] then
+        sum = sum + j
+      end
       j = j * 2
     end
+
     return sum
   end
 
-  function tmp:float()
-    -- TODO
+  -- conversion to signed integer
+  function tmp:int()
+    local sum = 0
+    local j = 1
+
+    if bits[1] then
+      -- negative
+      for i = #bits, 2, -1 do
+        if not bits[i] then
+          sum = sum + j
+        end
+        j = j * 2
+      end
+      sum = -(sum + 1)
+    else
+      -- positive
+      for i = #bits, 2, -1 do
+        if bits[i] then
+          sum = sum + j
+        end
+        j = j * 2
+      end
+    end
+
+    return sum
   end
 
+  -- conversion to float value
+  function tmp:float()
+    error("Float values are unsupported at the moment.", 2)
+    -- TODO: PICK float standard
+    -- TODO: Figure out how float shit works
+    -- TODO: float arithmetic
+  end
+
+  -- convert to char
   function tmp:char()
-    return string.char(self:int())
+    return string.char(self:uint())
   end
 
   -- returns a string of bits
