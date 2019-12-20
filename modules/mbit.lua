@@ -90,9 +90,7 @@ function funcs.new(sz)
   -- flip every bit in the bit table
   function tmp:negate()
     local tm = funcs.new(self)
-    for i = 1, #bits do
-      tm:set(i, not bits[i])
-    end
+    -- TODO: this is totally wrong
     return tm
   end
 
