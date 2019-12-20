@@ -72,7 +72,7 @@ function funcs.new(sz)
   -- negate then add
   function tmp:sub(b)
     local b2 = b:twocomp()
-    return self:add(self, b2)
+    return self:add(b2)
   end
 
   -- calculate the two's complement.
@@ -80,11 +80,12 @@ function funcs.new(sz)
     local tm = funcs.new(#bits)
 
     -- invert every bit
-    tm = tm:bnot()
+    tm = tmp:bnot()
 
     -- add one
-    local add1 = funcs.new(#bits):set(#bits, true)
-    tm = tm:add(add1)
+    local add1 = funcs.new(#bits)
+    add1:set(#bits, true)
+    tm = tm + add1
 
     return tm
   end
