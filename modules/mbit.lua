@@ -1,5 +1,12 @@
+--[[
+  Made by Fatboychummy
+  implementation of bitty bois
+]]
+
+local bit = require("modules.bit")
 local funcs = {}
 local mat = {}
+
 
 local dis = "For application security reasons, this operation is disabled."
 local function secureDisable()
@@ -50,11 +57,11 @@ function funcs.new(sz)
 
     -- full carry adder implementation, returns the sum and carry bit
     local function add(a, b, c)
-      local xor1 = bit32.bxor(a, b)
-      local sum = bit32.bxor(xor1, c)
-      local a1 = bit32.band(xor1, c)
-      local a2 = bit32.band(a, b)
-      local carryout = bit32.bor(a1, a2)
+      local xor1 = bit.xor(a, b)
+      local sum = bit.xor(xor1, c)
+      local a1 = bit.and(xor1, c)
+      local a2 = bit.and(a, b)
+      local carryout = bit.or(a1, a2)
       return sum, carryout
     end
 
