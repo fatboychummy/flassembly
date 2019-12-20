@@ -33,7 +33,9 @@ function funcs.new(sz)
   local bits = {}
 
   -- the returned object
-  local tmp = {}
+  local tmp = {
+    overflowbit = false
+  }
 
   -- ############ Arithmetic functions ############ --
 
