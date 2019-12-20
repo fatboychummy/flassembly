@@ -52,8 +52,8 @@ function funcs.new(sz)
     end
 
     -- ripple-carry adder
-    local s = 0
-    local carry = 0
+    local s = false
+    local carry = false
     for i = #bits, 1, -1 do
       s, carry = add(bits[i], b[i], carry)
       tm:set(i, s)
