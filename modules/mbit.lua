@@ -83,14 +83,21 @@ function funcs.new(sz)
 
   -- negate then add
   function tmp:sub(b)
-    local b2 = b:negate()
+    local b2 = b:twocomp()
     return self:add(self, b2)
   end
 
-  -- flip every bit in the bit table
-  function tmp:negate()
-    local tm = funcs.new(self)
-    -- TODO: this is totally wrong
+  -- calculate the two's complement.
+  function tmp:twocomp()
+    local tm = funcs.new(#bits)
+
+    -- invert every bit
+    tm = tm:not()
+
+    -- add one
+    local add1 = funcs.new(#bits):set(#bits, true)
+    tm = tm:add(add1)
+
     return tm
   end
 
@@ -229,6 +236,17 @@ function funcs.new(sz)
 
     for i = 1, #bits do
       tm:set(bit.nxor(bits[i], b[i]))
+    end
+
+    return tm
+  end
+
+  -- negate every bit
+  function tmp:not()
+    local tm = funcs.new(#bits)
+
+    for i = 1, #bits do
+      tm:set(i, not bits[i])
     end
 
     return tm
