@@ -300,7 +300,7 @@ function funcs.new(sz)
   function tmp:bstr()
     local str = ""
     for i = 1, #bits do
-      str = str .. tostring(bits[i])
+      str = str .. (bits[i] and '1' or '0')
     end
     return str
   end
