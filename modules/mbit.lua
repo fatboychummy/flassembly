@@ -5,7 +5,6 @@
 
 local bit = require("modules.bit")
 local funcs = {}
-local mat = {}
 
 
 local dis = "For application security reasons, this operation is disabled."
