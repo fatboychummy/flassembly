@@ -351,4 +351,58 @@ function funcs.new(sz)
   return tmp
 end
 
+function funcs.read(str, len)
+  if type(str) ~= "string" then
+    error("Invalid argument #1: expected string, got "
+          .. type(str) .. ".", 2)
+  end
+  if type(len) ~= "nil" and type(len) ~= "number" then
+    error("Invalid argument #2: expected number or nil, got "
+          .. type(len) .. ".", 2)
+  end
+
+  len = len or 4 -- assume reading a byte unless otherwise stated
+
+  local bittybois = {}
+
+  local current = {}
+  local i = 0
+  for char in str:gmatch(".") do
+    if i % len == 0 and i ~= 0 then
+      bittybois[#bittybois + 1] = {}
+      bittybois[#bittybois].bits = current
+      current = {}
+    end
+
+    if char ~= "1" and char ~= "0" then
+      error("Error in input at character " .. tostring(i + 1)
+            .. ": " .. char .. " is not '1' or '0'.", 2)
+    end
+
+    local out
+    if char == '1' then
+      out = true
+    else
+      out = false
+    end
+
+    current[#current + 1] = out
+    i = i + 1
+  end
+  bittybois[#bittybois + 1] = {}
+  bittybois[#bittybois].bits = current
+
+  if i % len ~= 0 then
+    error("Error in input: Length is not divisible by " .. tostring(len) .. ".",
+          2)
+  end
+
+  local out = {}
+  for i = 1, #bittybois do
+    out[i] = funcs.new(bittybois[i])
+  end
+
+  return out
+end
+
 return funcs
