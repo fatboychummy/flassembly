@@ -18,7 +18,7 @@ function bit.nor(a, b)
   return not (a or b)
 end
 function bit.nand(a, b)
-  return not (a or b)
+  return not (a and b)
 end
 function bit.nxor(a, b)
   return not bit.xor(a, b)
