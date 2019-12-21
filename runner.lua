@@ -7,6 +7,10 @@
 
 local mbit = require("modules.mbit")
 local regs = {}
+for i = 0, 31 do
+  regs[i] = mbit.new(32)
+end
+
 local ops = {
   [0] = function(srcreg1, srcreg2, destreg, num)
 
