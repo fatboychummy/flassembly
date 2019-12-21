@@ -15,34 +15,35 @@ end
 
 -- create a new bit table
 function funcs.new(sz)
+  -- the returned object
+  local tmp = {
+    overflowbit = false,
+    bits = {}
+  }
+
   -- make sure right types
   if type(sz) == "table" then
-    local c = getmetatable(sz)
-    if c and c["__type"] == "bit" then
-      sz = c.bits
+    if type(sz["bits"]) == "table" then
+      for i = 1, #sz.bits do
+        tmp.bits[i] = sz.bits[i]
+      end
     else
       error("Bad argument #1: Expected number or bittable, got "
             .. type(sz) .. ".", 2)
+    end
+  elseif type(sz) == "number" then
+    for i = 1, sz do
+      tmp.bits[i] = false
     end
   elseif type(sz) ~= "number" then
     error("Bad argument #1: Expected number or bittable, got "
           .. type(sz) .. ".", 2)
   end
 
-  -- bit table
-  local bits = {}
-
-  -- the returned object
-  local tmp = {
-    overflowbit = false
-  }
-
   -- ############ Arithmetic functions ############ --
 
   -- add two bit tables
   function tmp:add(b)
-    local tm = funcs.new(#bits)
-
     -- full carry adder implementation, returns the sum and carry bit
     local function add(a, b, c)
       local xor1 = bit.xor(a, b)
@@ -56,38 +57,36 @@ function funcs.new(sz)
     -- ripple-carry adder
     local s = false
     local carry = false
-    for i = #bits, 1, -1 do
-      s, carry = add(bits[i], b[i], carry)
-      tm:set(i, s)
+    for i = #self.bits, 1, -1 do
+      s, carry = add(self.bits[i], b.bits[i], carry)
+      self.bits[i] = s
     end
 
     -- if the carry bit is set at the end of addition, we've overflowed.
     if carry then
-      tm.overflowbit = true
+      self.overflowbit = true
     end
 
-    return tm
+    return self
   end
 
   -- negate then add
   function tmp:sub(b)
-    local b2 = b:twocomp()
+    local b2 = funcs.new(b):twocomp()
     return self:add(b2)
   end
 
   -- calculate the two's complement.
   function tmp:twocomp()
-    local tm = funcs.new(#bits)
-
     -- invert every bit
-    tm = tmp:bnot()
+    self:bnot()
 
     -- add one
-    local add1 = funcs.new(#bits)
-    add1:set(#bits, true)
-    tm = tm + add1
+    local add1 = funcs.new(#self.bits)
+    add1:set(1)
+    self:add(add1)
 
-    return tm
+    return self
   end
 
   function tmp:mult(b)
@@ -117,12 +116,40 @@ function funcs.new(sz)
   end
 
   -- set a bit in the bit table
-  function tmp:set(i, x)
-    bits[i] = x
+  function tmp:set(i)
+    if i then
+      -- assume number is int or float
+      -- float unsupported atm so assume int
+      local flip = false
+      if i < 0 then
+        flip = true
+      end
+      i = math.abs(i)
+
+      local k = 1
+      for j = #self.bits - 1, 0, -1 do
+        local pw = math.pow(2, j)
+        if i - pw >= 0 then
+          i = i - pw
+          self.bits[k] = true
+        else
+          self.bits[k] = false
+        end
+
+
+        k = k + 1
+      end
+      if flip then
+        self:twocomp()
+      end
+      os.sleep(0.2)
+    else
+      -- error
+    end
   end
 
   function tmp:size()
-    return #bits
+    return #self.bits
   end
 
   -- ############ Logical Functions ############ --
@@ -130,115 +157,98 @@ function funcs.new(sz)
   -- left-shift by c positions
   function tmp:lshift(c)
     c = c or 1
-    local tm = funcs.new(#bits)
 
     -- copy bits left c positions
-    for i = c, #bits do
-      tm:set(i - c + 1, bits[i])
+    for i = c, #self.bits do
+      self.bits[i - c + 1] = self.bits[i]
     end
 
-    return tm
+    return self
   end
 
   -- right-shift by c positions
   function tmp:logrshift(c)
     c = c or 1
-    local tm = funcs.new(#bits)
 
     -- copy bits right c positions
-    for i = 1, #bits - c do
-      tm:set(i + c, bits[i])
+    for i = 1, #self.bits - c do
+      self.bits[i + c] = self.bits[i]
     end
 
-    return tm
+    return self
   end
 
   function tmp:arithrshift(c)
     c = c or 1
-    local tm = funcs.new(#bits)
 
     -- conserve sign bit
     for i = 1, c do
-      tm:set(i, bits[1])
+      self.bits[i] = self.bits[1]
     end
 
     -- copy bits right c positions
-    for i = 1, #bits - c do
-      tm:set(i + c, bits[i])
+    for i = 1, #self.bits - c do
+      self.bits[i + c] = self.bits[i]
     end
 
-    return tm
+    return self
   end
 
   function tmp:bor(b)
-    local tm = funcs.new(#bits)
-
-    for i = 1, #bits do
-      tm:set(bit.bor(bits[i], b[i]))
+    for i = 1, #self.bits do
+      self.bits[i] = bit.bor(self.bits[i], b[i])
     end
 
-    return tm
+    return self
   end
 
   function tmp:band(b)
-    local tm = funcs.new(#bits)
-
-    for i = 1, #bits do
-      tm:set(bit.band(bits[i], b[i]))
+    for i = 1, #self.bits do
+      self.bits[i] = bit.band(self.bits[i], b[i])
     end
 
-    return tm
+    return self
   end
 
   function tmp:xor(b)
-    local tm = funcs.new(#bits)
-
-    for i = 1, #bits do
-      tm:set(bit.xor(bits[i], b[i]))
+    for i = 1, #self.bits do
+      self.bits[i] = bit.xor(self.bits[i], b[i])
     end
 
-    return tm
+    return self
   end
 
   function tmp:nor(b)
-    local tm = funcs.new(#bits)
-
-    for i = 1, #bits do
-      tm:set(bit.nor(bits[i], b[i]))
+    for i = 1, #self.bits do
+      self.bits[i] = bit.nor(self.bits[i], b[i])
     end
 
     return tm
   end
 
   function tmp:nand(b)
-    local tm = funcs.new(#bits)
-
-    for i = 1, #bits do
-      tm:set(bit.nand(bits[i], b[i]))
+    for i = 1, #self.bits do
+      self.bits[i] = bit.nand(self.bits[i], b[i])
     end
 
-    return tm
+    return self
   end
 
   function tmp:nxor(b)
-    local tm = funcs.new(#bits)
-
-    for i = 1, #bits do
-      tm:set(bit.nxor(bits[i], b[i]))
+    for i = 1, #self.bits do
+      self.bits[i] = bit.nxor(self.bits[i], b[i])
     end
 
-    return tm
+    return self
   end
 
   -- negate every bit
   function tmp:bnot()
-    local tm = funcs.new(#bits)
-
-    for i = 1, #bits do
-      tm:set(i, not bits[i])
+    for i = 1, #self.bits do
+      self.bits[i] = not self.bits[i]
     end
 
-    return tm
+    return self -- chaincalls
   end
 
   -- ############ Conversion Functions ############ --
@@ -249,8 +259,8 @@ function funcs.new(sz)
     local j = 1
 
     -- iterate through numbers and add to sum
-    for i = #bits, 1, -1 do
-      if bits[i] then
+    for i = #self.bits, 1, -1 do
+      if self.bits[i] then
         sum = sum + j
       end
       j = j * 2
@@ -264,10 +274,10 @@ function funcs.new(sz)
     local sum = 0
     local j = 1
 
-    if bits[1] then
+    if self.bits[1] then
       -- negative
-      for i = #bits, 2, -1 do
-        if not bits[i] then
+      for i = #self.bits, 2, -1 do
+        if not self.bits[i] then
           sum = sum + j
         end
         j = j * 2
@@ -275,8 +285,8 @@ function funcs.new(sz)
       sum = -(sum + 1)
     else
       -- positive
-      for i = #bits, 2, -1 do
-        if bits[i] then
+      for i = #self.bits, 2, -1 do
+        if self.bits[i] then
           sum = sum + j
         end
         j = j * 2
@@ -302,36 +312,26 @@ function funcs.new(sz)
   -- returns a string of bits
   function tmp:bstr()
     local str = ""
-    for i = 1, #bits do
-      str = str .. (bits[i] and '1' or '0')
+    for i = 1, #self.bits do
+      str = str .. (self.bits[i] and '1' or '0')
     end
     return str
-  end
-
-  -- ####### Setup ####### --
-
-  if type(sz) == "number" then
-    for i = 1, sz do
-      bits[i] = false
-    end
-  else
-    for i = 1, #sz do
-      bits[i] = sz[i]
-    end
   end
 
   -- metatable
   local mta = {
     __type = "bit",
-    __metatable = dis,
+    __metatable = function(ps)
+      if ps == 15 then
+        return mta
+      else
+        secureDisable()
+      end
+    end,
     __newindex = secureDisable,
     __add = tmp.add,
     __sub = tmp.sub
   }
-
-  function mta:__index(key)
-    return bits[key]
-  end
 
   tmp = setmetatable(tmp, mta)
 
