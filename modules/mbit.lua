@@ -130,7 +130,7 @@ function funcs.new(sz)
 
   -- set a bit in the bit table
   function tmp:set(i)
-    if i then
+    if type(i) == "number" then
       -- assume number is int or float
       -- float unsupported atm so assume int
       local flip = false
