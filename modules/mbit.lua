@@ -103,9 +103,9 @@ function funcs.new(sz)
     --TODO: non-temporary implementation
     local a = self:int()
     local b2 = b:int()
-    self:set(a / b2)
+    self:set(math.floor(a / b2))
     local tmp = funcs.new(#self.bits)
-    self:set(a % b2)
+    tmp:set(a % b2)
 
     return self, tmp
   end
