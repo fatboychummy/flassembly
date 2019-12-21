@@ -90,12 +90,25 @@ function funcs.new(sz)
   end
 
   function tmp:mult(b)
-
+    --TODO: non-temporary implementation
+    local a = self:int()
+    local b2 = b:int()
+    print("debug:", a, b2)
+    self:set(a * b2)
+    print(self:int())
+    return self
   end
 
   -- return int div AND mod
   function tmp:div(b)
+    --TODO: non-temporary implementation
+    local a = self:int()
+    local b2 = b:int()
+    self:set(a / b2)
+    local tmp = funcs.new(#self.bits)
+    self:set(a % b2)
 
+    return self, tmp
   end
 
 
