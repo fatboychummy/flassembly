@@ -145,6 +145,7 @@ function funcs.new(sz)
       os.sleep(0.2)
     else
       -- error
+      error("Yeah you did something wrong here", 2)
     end
   end
 
