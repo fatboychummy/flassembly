@@ -127,6 +127,13 @@ function funcs.new(sz)
 
   end
 
+  function tmp:reset()
+    for i = 1, #self.bits do
+      self.bits[i] = false
+    end
+    return self
+  end
+
   -- set a bit in the bit table
   function tmp:set(i)
     if type(i) == "number" then
