@@ -104,10 +104,10 @@ function funcs.new(sz)
     local b2 = b:int()
     self:set(math.floor(a / b2))
 
-    local tmp = funcs.new(#self.bits)
-    tmp:set(a % b2)
+    local tm = funcs.new(#self.bits)
+    tm:set(a % b2)
 
-    return self, tmp
+    return self, tm
   end
 
 
